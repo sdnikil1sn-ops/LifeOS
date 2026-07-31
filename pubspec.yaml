@@ -13,11 +13,11 @@ dependencies:
 
   cupertino_icons: ^1.0.8
 
-  # State Management
-  flutter_riverpod: ^2.6.1
-
   # Navigation
   go_router: ^16.2.0
+
+  # State Management
+  flutter_riverpod: ^3.0.0
 
   # Database
   drift: ^2.29.0
@@ -56,7 +56,6 @@ dev_dependencies:
     sdk: flutter
 
   flutter_lints: ^6.0.0
-
   drift_dev: ^2.29.0
   build_runner: ^2.7.1
 
@@ -67,5 +66,3 @@ flutter:
     - assets/images/
     - assets/icons/
     - assets/animations/
-
-  fonts: []
