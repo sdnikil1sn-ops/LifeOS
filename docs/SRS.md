@@ -87,6 +87,7 @@ This document describes the overall functionality, architecture, requirements, i
 
 It will serve as the primary engineering reference throughout development.
 
+
 ---
 
 # 2. Overall Description
@@ -296,3 +297,273 @@ flutter_local_notifications
 PDF package
 
 Printing package
+---
+
+# 3. System Features
+
+The following features define the capabilities planned for LifeOS v1.0.0 and future releases.
+
+---
+
+## SF-001 Task Management
+
+### Description
+
+Allows users to create, edit, organize, archive, and delete tasks.
+
+### Includes
+
+- Create Task
+- Edit Task
+- Delete Task
+- Archive Task
+- Restore Task
+- Duplicate Task
+
+Priority: Critical
+
+Future Expansion:
+
+- Task Templates
+- AI-generated Tasks
+
+---
+
+## SF-002 Intelligent Recurring Task Engine
+
+Supports complex recurring schedules.
+
+### Supported Rules
+
+- Daily
+- Weekly
+- Monthly
+- Every X Days
+- Every X Weeks
+- Every X Months
+- Selected Weekdays
+- Date Range
+- Excluded Dates
+
+Priority: Critical
+
+Future Expansion:
+
+Natural language recurrence creation.
+
+---
+
+## SF-003 Daily Dashboard
+
+Displays:
+
+- Today's tasks
+- Productivity score
+- Progress ring
+- Time spent
+- Pending tasks
+- Streaks
+
+Priority: Critical
+
+---
+
+## SF-004 Calendar
+
+Features:
+
+- Month View
+- Week View
+- Day View
+- Productivity Heatmap
+- Task Timeline
+
+Priority: High
+
+---
+
+## SF-005 Habit Tracking
+
+Tracks recurring habits.
+
+Includes:
+
+- Current streak
+- Longest streak
+- Success rate
+- Missed days
+- Habit history
+
+Priority: High
+
+---
+
+## SF-006 Categories
+
+Allows grouping tasks.
+
+Default Categories:
+
+- Health
+- Study
+- Coding
+- Work
+- Finance
+- Personal
+- Shopping
+- Home
+- Fitness
+
+Custom categories supported.
+
+Priority: High
+
+---
+
+## SF-007 Notifications
+
+Supports:
+
+- Morning summary
+- Reminder notifications
+- Night review
+- Custom reminders
+
+Priority: High
+
+---
+
+## SF-008 Analytics
+
+Provides:
+
+- Daily productivity
+- Weekly productivity
+- Monthly analysis
+- Yearly trends
+- Category performance
+- Completion percentage
+- Time analysis
+
+Priority: Critical
+
+---
+
+## SF-009 Reports
+
+Export options:
+
+- PDF
+- CSV
+- Excel
+- JSON
+
+Generate:
+
+- Daily Report
+- Weekly Report
+- Monthly Report
+- Yearly Report
+
+Priority: Medium
+
+---
+
+## SF-010 Backup & Restore
+
+Supports:
+
+- Manual Backup
+- Restore
+- Import
+- Export
+
+Priority: High
+
+---
+
+## SF-011 Search & Filters
+
+Search by:
+
+- Task Name
+- Category
+- Tag
+- Priority
+- Date
+- Completion
+
+Priority: Medium
+
+---
+
+## SF-012 Notes & Attachments
+
+Each task may include:
+
+- Notes
+- Images
+- Voice Notes
+- PDFs
+- Links
+
+Priority: Medium
+
+---
+
+## SF-013 AI Productivity Insights
+
+Generate intelligent recommendations such as:
+
+- Most productive day
+- Frequently skipped task
+- Best study hours
+- Consistency analysis
+- Monthly recommendations
+
+Priority: Future (v2.0)
+
+---
+
+## SF-014 Settings
+
+Includes:
+
+- Theme
+- Backup settings
+- Notifications
+- Data Management
+- Export settings
+
+Priority: High
+
+---
+
+## SF-015 Security
+
+Supports:
+
+- PIN Lock
+- Fingerprint Authentication
+- Secure Backup
+- Data Encryption
+
+Priority: Medium
+
+---
+
+## Feature Summary
+
+| Feature | Priority | Version |
+|----------|----------|----------|
+| Task Management | Critical | v1.0 |
+| Recurring Engine | Critical | v1.0 |
+| Dashboard | Critical | v1.0 |
+| Calendar | High | v1.0 |
+| Habit Tracking | High | v1.0 |
+| Analytics | Critical | v1.0 |
+| Reports | Medium | v1.0 |
+| Backup | High | v1.0 |
+| AI Insights | Future | v2.0 |
+| Health Module | Future | v2.0 |
+| Finance Module | Future | v3.0 |
