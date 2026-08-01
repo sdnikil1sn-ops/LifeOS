@@ -1,22 +1,31 @@
 import 'package:flutter/material.dart';
+import '../../../shared/utils/quote_service.dart';
 
 class QuoteCard extends StatelessWidget {
+
   const QuoteCard({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return const Card(
+
+    return Card(
+
       child: Padding(
-        padding: EdgeInsets.all(20),
+
+        padding: const EdgeInsets.all(16),
+
         child: Text(
-          '"The future depends on what you do today."',
-          style: TextStyle(
-            fontSize: 18,
-            fontStyle: FontStyle.italic,
-          ),
-          textAlign: TextAlign.center,
+
+          QuoteService.todayQuote(),
+
+          style: Theme.of(context).textTheme.bodyLarge,
+
         ),
+
       ),
+
     );
+
   }
+
 }

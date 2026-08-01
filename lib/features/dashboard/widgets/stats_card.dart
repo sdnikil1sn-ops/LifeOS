@@ -1,45 +1,55 @@
 import 'package:flutter/material.dart';
 
 class StatsCard extends StatelessWidget {
-  final IconData icon;
-  final String title;
-  final String value;
-  final Color color;
+
+  final int completed;
+  final int total;
 
   const StatsCard({
     super.key,
-    required this.icon,
-    required this.title,
-    required this.value,
-    required this.color,
+    required this.completed,
+    required this.total,
   });
 
   @override
   Widget build(BuildContext context) {
+
+    final percent =
+        total == 0 ? 0 : ((completed / total) * 100).round();
+
     return Card(
-      elevation: 2,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(20),
-      ),
+
       child: Padding(
-        padding: const EdgeInsets.all(18),
+
+        padding: const EdgeInsets.all(16),
+
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+
           children: [
-            Icon(icon, color: color, size: 30),
-            const SizedBox(height: 14),
+
             Text(
-              value,
-              style: const TextStyle(
-                fontSize: 26,
-                fontWeight: FontWeight.bold,
-              ),
+              "$completed / $total",
+              style: Theme.of(context).textTheme.headlineSmall,
             ),
-            const SizedBox(height: 4),
-            Text(title),
+
+            const SizedBox(height: 8),
+
+            LinearProgressIndicator(
+              value: total == 0 ? 0 : completed / total,
+            ),
+
+            const SizedBox(height: 8),
+
+            Text("$percent % Completed"),
+
           ],
+
         ),
+
       ),
+
     );
+
   }
+
 }

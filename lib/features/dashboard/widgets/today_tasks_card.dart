@@ -1,29 +1,62 @@
 import 'package:flutter/material.dart';
+import '../../../database/database.dart';
 
 class TodayTasksCard extends StatelessWidget {
-  const TodayTasksCard({super.key});
+
+  final List<Task> tasks;
+
+  const TodayTasksCard({
+    super.key,
+    required this.tasks,
+  });
 
   @override
   Widget build(BuildContext context) {
+
+    if (tasks.isEmpty) {
+
+      return const Card(
+
+        child: Padding(
+
+          padding: EdgeInsets.all(20),
+
+          child: Text(
+            "No tasks today\nTap + to create one.",
+          ),
+
+        ),
+
+      );
+
+    }
+
     return Card(
-      child: Column(
-        children: const [
-          ListTile(
-            leading: Icon(Icons.task_alt),
-            title: Text("Flutter Development"),
-          ),
-          Divider(height: 1),
-          ListTile(
-            leading: Icon(Icons.task_alt),
-            title: Text("Gym Workout"),
-          ),
-          Divider(height: 1),
-          ListTile(
-            leading: Icon(Icons.task_alt),
-            title: Text("Read 20 Pages"),
-          ),
-        ],
+
+      child: ListView.builder(
+
+        shrinkWrap: true,
+
+        physics: const NeverScrollableScrollPhysics(),
+
+        itemCount: tasks.length,
+
+        itemBuilder: (_, index) {
+
+          final task = tasks[index];
+
+          return ListTile(
+
+            title: Text(task.title),
+
+          );
+
+        },
+
       ),
+
     );
+
   }
+
 }
