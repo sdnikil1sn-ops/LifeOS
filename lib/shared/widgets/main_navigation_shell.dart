@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../features/dashboard/presentation/dashboard_screen.dart';
-import '../../features/tasks/presentation/tasks_page.dart';
+import '../../features/tasks/presentation/task_page.dart';
 import '../../features/calendar/presentation/calendar_page.dart';
 import '../../features/analytics/presentation/analytics_page.dart';
 import '../../features/settings/presentation/settings_page.dart';
@@ -18,7 +18,7 @@ class _MainNavigationShellState extends State<MainNavigationShell> {
 
   final pages = [
   const DashboardScreen(),
-  const TasksPage(),
+  const TaskPage(),
   const CalendarPage(),
   const AnalyticsPage(),
   const SettingsPage(),
