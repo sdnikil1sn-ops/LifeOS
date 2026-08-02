@@ -10,7 +10,8 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-
+  provider: ^6.1.5
+  table_calendar: ^3.2.0
   cupertino_icons: ^1.0.8
   timezone: ^0.10.1
   flutter_timezone: ^4.1.1

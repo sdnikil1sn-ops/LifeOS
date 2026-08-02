@@ -13,43 +13,55 @@ class OccurrenceGenerator {
     required this.occurrenceRepository,
   });
 
-  Future<void> generateUpcomingOccurrences({int daysAhead = 90}) async {
-    final tasks = await taskRepository.getAllTasks();
+  Future<void> generateUpcomingOccurrences({
+  int daysAhead = 90,
+}) async {
+  final tasks = await taskRepository.getAllTasks();
 
-    final now = DateTime.now();
-
-    final limit = now.add(Duration(days: daysAhead));
-
-    for (final task in tasks) {
-      if (task.repeatType == RepeatType.none) {
-        continue;
-      }
-
-      if (task.startDate == null) {
-        continue;
-      }
-
-      await occurrenceRepository.deleteOccurrencesForTask(task.id);
-
-      DateTime current = task.startDate!;
-
-      while (!current.isAfter(limit)) {
-        if (task.endDate != null && current.isAfter(task.endDate!)) {
-          break;
-        }
-
-        await occurrenceRepository.insertOccurrence(
-          TaskOccurrencesCompanion.insert(
-            taskId: task.id,
-            occurrenceDate: current,
-          ),
-        );
-
-        current = _nextOccurrence(current, task.repeatType);
-      }
-    }
+  for (final task in tasks) {
+    await generateOccurrencesForTask(
+      task,
+      daysAhead: daysAhead,
+    );
+  }
+}
+Future<void> generateOccurrencesForTask(
+  Task task, {
+  int daysAhead = 90,
+}) async {
+  if (task.repeatType == RepeatType.none) {
+    return;
   }
 
+  if (task.startDate == null) {
+    return;
+  }
+
+  final now = DateTime.now();
+  final limit = now.add(Duration(days: daysAhead));
+
+  await occurrenceRepository.deleteOccurrencesForTask(task.id);
+
+  DateTime current = task.startDate!;
+
+  while (!current.isAfter(limit)) {
+    if (task.endDate != null && current.isAfter(task.endDate!)) {
+      break;
+    }
+
+    await occurrenceRepository.insertOccurrence(
+      TaskOccurrencesCompanion.insert(
+        taskId: task.id,
+        occurrenceDate: current,
+      ),
+    );
+
+    current = _nextOccurrence(
+      current,
+      task.repeatType,
+    );
+  }
+}
   DateTime _nextOccurrence(DateTime current, RepeatType repeatType) {
     switch (repeatType) {
       case RepeatType.daily:
