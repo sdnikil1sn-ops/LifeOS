@@ -6,7 +6,27 @@ class OccurrenceRepository {
   final AppDatabase database;
 
   OccurrenceRepository(this.database);
+  Future<List<TaskOccurrence>> getOccurrencesForTask(
+    int taskId,
+    ) {
+    return (database.select(database.taskOccurrences)
+        ..where((tbl) => tbl.taskId.equals(taskId)))
+      .get();
+  }
+  Future<bool> occurrenceExists(
+  int taskId,
+  DateTime occurrenceDate,
+) async {
+  final result = await (database.select(database.taskOccurrences)
+        ..where(
+          (tbl) =>
+              tbl.taskId.equals(taskId) &
+              tbl.occurrenceDate.equals(occurrenceDate),
+        ))
+      .getSingleOrNull();
 
+  return result != null;
+}
   Future<List<TaskOccurrence>> getOccurrencesBetween(
     DateTime from,
     DateTime to,
@@ -30,12 +50,14 @@ class OccurrenceRepository {
   }
 
   Future<void> insertOccurrence(
-    TaskOccurrencesCompanion occurrence,
-  ) {
-    return database
-        .into(database.taskOccurrences)
-        .insert(occurrence);
-  }
+  TaskOccurrencesCompanion occurrence,
+) async {
+  await database
+      .into(database.taskOccurrences)
+      .insertOnConflictUpdate(
+        occurrence,
+      );
+}
 
   Future<void> deleteOccurrencesForTask(
     int taskId,
