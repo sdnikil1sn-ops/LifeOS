@@ -1117,8 +1117,54 @@ class $TaskOccurrencesTable extends TaskOccurrences
     ),
     defaultValue: const Constant(false),
   );
+  static const VerificationMeta _completedAtMeta = const VerificationMeta(
+    'completedAt',
+  );
   @override
-  List<GeneratedColumn> get $columns => [id, taskId, occurrenceDate, completed];
+  late final GeneratedColumn<DateTime> completedAt = GeneratedColumn<DateTime>(
+    'completed_at',
+    aliasedName,
+    true,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _notificationSentMeta = const VerificationMeta(
+    'notificationSent',
+  );
+  @override
+  late final GeneratedColumn<bool> notificationSent = GeneratedColumn<bool>(
+    'notification_sent',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("notification_sent" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+    defaultValue: currentDateAndTime,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    taskId,
+    occurrenceDate,
+    completed,
+    completedAt,
+    notificationSent,
+    createdAt,
+  ];
   @override
   String get aliasedName => _alias ?? actualTableName;
   @override
@@ -1159,6 +1205,30 @@ class $TaskOccurrencesTable extends TaskOccurrences
         completed.isAcceptableOrUnknown(data['completed']!, _completedMeta),
       );
     }
+    if (data.containsKey('completed_at')) {
+      context.handle(
+        _completedAtMeta,
+        completedAt.isAcceptableOrUnknown(
+          data['completed_at']!,
+          _completedAtMeta,
+        ),
+      );
+    }
+    if (data.containsKey('notification_sent')) {
+      context.handle(
+        _notificationSentMeta,
+        notificationSent.isAcceptableOrUnknown(
+          data['notification_sent']!,
+          _notificationSentMeta,
+        ),
+      );
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    }
     return context;
   }
 
@@ -1184,6 +1254,18 @@ class $TaskOccurrencesTable extends TaskOccurrences
         DriftSqlType.bool,
         data['${effectivePrefix}completed'],
       )!,
+      completedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}completed_at'],
+      ),
+      notificationSent: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}notification_sent'],
+      )!,
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created_at'],
+      )!,
     );
   }
 
@@ -1198,11 +1280,17 @@ class TaskOccurrence extends DataClass implements Insertable<TaskOccurrence> {
   final int taskId;
   final DateTime occurrenceDate;
   final bool completed;
+  final DateTime? completedAt;
+  final bool notificationSent;
+  final DateTime createdAt;
   const TaskOccurrence({
     required this.id,
     required this.taskId,
     required this.occurrenceDate,
     required this.completed,
+    this.completedAt,
+    required this.notificationSent,
+    required this.createdAt,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -1211,6 +1299,11 @@ class TaskOccurrence extends DataClass implements Insertable<TaskOccurrence> {
     map['task_id'] = Variable<int>(taskId);
     map['occurrence_date'] = Variable<DateTime>(occurrenceDate);
     map['completed'] = Variable<bool>(completed);
+    if (!nullToAbsent || completedAt != null) {
+      map['completed_at'] = Variable<DateTime>(completedAt);
+    }
+    map['notification_sent'] = Variable<bool>(notificationSent);
+    map['created_at'] = Variable<DateTime>(createdAt);
     return map;
   }
 
@@ -1220,6 +1313,11 @@ class TaskOccurrence extends DataClass implements Insertable<TaskOccurrence> {
       taskId: Value(taskId),
       occurrenceDate: Value(occurrenceDate),
       completed: Value(completed),
+      completedAt: completedAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(completedAt),
+      notificationSent: Value(notificationSent),
+      createdAt: Value(createdAt),
     );
   }
 
@@ -1233,6 +1331,9 @@ class TaskOccurrence extends DataClass implements Insertable<TaskOccurrence> {
       taskId: serializer.fromJson<int>(json['taskId']),
       occurrenceDate: serializer.fromJson<DateTime>(json['occurrenceDate']),
       completed: serializer.fromJson<bool>(json['completed']),
+      completedAt: serializer.fromJson<DateTime?>(json['completedAt']),
+      notificationSent: serializer.fromJson<bool>(json['notificationSent']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
     );
   }
   @override
@@ -1243,6 +1344,9 @@ class TaskOccurrence extends DataClass implements Insertable<TaskOccurrence> {
       'taskId': serializer.toJson<int>(taskId),
       'occurrenceDate': serializer.toJson<DateTime>(occurrenceDate),
       'completed': serializer.toJson<bool>(completed),
+      'completedAt': serializer.toJson<DateTime?>(completedAt),
+      'notificationSent': serializer.toJson<bool>(notificationSent),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
     };
   }
 
@@ -1251,11 +1355,17 @@ class TaskOccurrence extends DataClass implements Insertable<TaskOccurrence> {
     int? taskId,
     DateTime? occurrenceDate,
     bool? completed,
+    Value<DateTime?> completedAt = const Value.absent(),
+    bool? notificationSent,
+    DateTime? createdAt,
   }) => TaskOccurrence(
     id: id ?? this.id,
     taskId: taskId ?? this.taskId,
     occurrenceDate: occurrenceDate ?? this.occurrenceDate,
     completed: completed ?? this.completed,
+    completedAt: completedAt.present ? completedAt.value : this.completedAt,
+    notificationSent: notificationSent ?? this.notificationSent,
+    createdAt: createdAt ?? this.createdAt,
   );
   TaskOccurrence copyWithCompanion(TaskOccurrencesCompanion data) {
     return TaskOccurrence(
@@ -1265,6 +1375,13 @@ class TaskOccurrence extends DataClass implements Insertable<TaskOccurrence> {
           ? data.occurrenceDate.value
           : this.occurrenceDate,
       completed: data.completed.present ? data.completed.value : this.completed,
+      completedAt: data.completedAt.present
+          ? data.completedAt.value
+          : this.completedAt,
+      notificationSent: data.notificationSent.present
+          ? data.notificationSent.value
+          : this.notificationSent,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
     );
   }
 
@@ -1274,13 +1391,24 @@ class TaskOccurrence extends DataClass implements Insertable<TaskOccurrence> {
           ..write('id: $id, ')
           ..write('taskId: $taskId, ')
           ..write('occurrenceDate: $occurrenceDate, ')
-          ..write('completed: $completed')
+          ..write('completed: $completed, ')
+          ..write('completedAt: $completedAt, ')
+          ..write('notificationSent: $notificationSent, ')
+          ..write('createdAt: $createdAt')
           ..write(')'))
         .toString();
   }
 
   @override
-  int get hashCode => Object.hash(id, taskId, occurrenceDate, completed);
+  int get hashCode => Object.hash(
+    id,
+    taskId,
+    occurrenceDate,
+    completed,
+    completedAt,
+    notificationSent,
+    createdAt,
+  );
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
@@ -1288,7 +1416,10 @@ class TaskOccurrence extends DataClass implements Insertable<TaskOccurrence> {
           other.id == this.id &&
           other.taskId == this.taskId &&
           other.occurrenceDate == this.occurrenceDate &&
-          other.completed == this.completed);
+          other.completed == this.completed &&
+          other.completedAt == this.completedAt &&
+          other.notificationSent == this.notificationSent &&
+          other.createdAt == this.createdAt);
 }
 
 class TaskOccurrencesCompanion extends UpdateCompanion<TaskOccurrence> {
@@ -1296,17 +1427,26 @@ class TaskOccurrencesCompanion extends UpdateCompanion<TaskOccurrence> {
   final Value<int> taskId;
   final Value<DateTime> occurrenceDate;
   final Value<bool> completed;
+  final Value<DateTime?> completedAt;
+  final Value<bool> notificationSent;
+  final Value<DateTime> createdAt;
   const TaskOccurrencesCompanion({
     this.id = const Value.absent(),
     this.taskId = const Value.absent(),
     this.occurrenceDate = const Value.absent(),
     this.completed = const Value.absent(),
+    this.completedAt = const Value.absent(),
+    this.notificationSent = const Value.absent(),
+    this.createdAt = const Value.absent(),
   });
   TaskOccurrencesCompanion.insert({
     this.id = const Value.absent(),
     required int taskId,
     required DateTime occurrenceDate,
     this.completed = const Value.absent(),
+    this.completedAt = const Value.absent(),
+    this.notificationSent = const Value.absent(),
+    this.createdAt = const Value.absent(),
   }) : taskId = Value(taskId),
        occurrenceDate = Value(occurrenceDate);
   static Insertable<TaskOccurrence> custom({
@@ -1314,12 +1454,18 @@ class TaskOccurrencesCompanion extends UpdateCompanion<TaskOccurrence> {
     Expression<int>? taskId,
     Expression<DateTime>? occurrenceDate,
     Expression<bool>? completed,
+    Expression<DateTime>? completedAt,
+    Expression<bool>? notificationSent,
+    Expression<DateTime>? createdAt,
   }) {
     return RawValuesInsertable({
       if (id != null) 'id': id,
       if (taskId != null) 'task_id': taskId,
       if (occurrenceDate != null) 'occurrence_date': occurrenceDate,
       if (completed != null) 'completed': completed,
+      if (completedAt != null) 'completed_at': completedAt,
+      if (notificationSent != null) 'notification_sent': notificationSent,
+      if (createdAt != null) 'created_at': createdAt,
     });
   }
 
@@ -1328,12 +1474,18 @@ class TaskOccurrencesCompanion extends UpdateCompanion<TaskOccurrence> {
     Value<int>? taskId,
     Value<DateTime>? occurrenceDate,
     Value<bool>? completed,
+    Value<DateTime?>? completedAt,
+    Value<bool>? notificationSent,
+    Value<DateTime>? createdAt,
   }) {
     return TaskOccurrencesCompanion(
       id: id ?? this.id,
       taskId: taskId ?? this.taskId,
       occurrenceDate: occurrenceDate ?? this.occurrenceDate,
       completed: completed ?? this.completed,
+      completedAt: completedAt ?? this.completedAt,
+      notificationSent: notificationSent ?? this.notificationSent,
+      createdAt: createdAt ?? this.createdAt,
     );
   }
 
@@ -1352,6 +1504,15 @@ class TaskOccurrencesCompanion extends UpdateCompanion<TaskOccurrence> {
     if (completed.present) {
       map['completed'] = Variable<bool>(completed.value);
     }
+    if (completedAt.present) {
+      map['completed_at'] = Variable<DateTime>(completedAt.value);
+    }
+    if (notificationSent.present) {
+      map['notification_sent'] = Variable<bool>(notificationSent.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
     return map;
   }
 
@@ -1361,7 +1522,10 @@ class TaskOccurrencesCompanion extends UpdateCompanion<TaskOccurrence> {
           ..write('id: $id, ')
           ..write('taskId: $taskId, ')
           ..write('occurrenceDate: $occurrenceDate, ')
-          ..write('completed: $completed')
+          ..write('completed: $completed, ')
+          ..write('completedAt: $completedAt, ')
+          ..write('notificationSent: $notificationSent, ')
+          ..write('createdAt: $createdAt')
           ..write(')'))
         .toString();
   }
@@ -2638,6 +2802,9 @@ typedef $$TaskOccurrencesTableCreateCompanionBuilder =
       required int taskId,
       required DateTime occurrenceDate,
       Value<bool> completed,
+      Value<DateTime?> completedAt,
+      Value<bool> notificationSent,
+      Value<DateTime> createdAt,
     });
 typedef $$TaskOccurrencesTableUpdateCompanionBuilder =
     TaskOccurrencesCompanion Function({
@@ -2645,6 +2812,9 @@ typedef $$TaskOccurrencesTableUpdateCompanionBuilder =
       Value<int> taskId,
       Value<DateTime> occurrenceDate,
       Value<bool> completed,
+      Value<DateTime?> completedAt,
+      Value<bool> notificationSent,
+      Value<DateTime> createdAt,
     });
 
 final class $$TaskOccurrencesTableReferences
@@ -2698,6 +2868,21 @@ class $$TaskOccurrencesTableFilterComposer
     builder: (column) => ColumnFilters(column),
   );
 
+  ColumnFilters<DateTime> get completedAt => $composableBuilder(
+    column: $table.completedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get notificationSent => $composableBuilder(
+    column: $table.notificationSent,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
   $$TasksTableFilterComposer get taskId {
     final $$TasksTableFilterComposer composer = $composerBuilder(
       composer: this,
@@ -2746,6 +2931,21 @@ class $$TaskOccurrencesTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<DateTime> get completedAt => $composableBuilder(
+    column: $table.completedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get notificationSent => $composableBuilder(
+    column: $table.notificationSent,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   $$TasksTableOrderingComposer get taskId {
     final $$TasksTableOrderingComposer composer = $composerBuilder(
       composer: this,
@@ -2789,6 +2989,19 @@ class $$TaskOccurrencesTableAnnotationComposer
 
   GeneratedColumn<bool> get completed =>
       $composableBuilder(column: $table.completed, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get completedAt => $composableBuilder(
+    column: $table.completedAt,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<bool> get notificationSent => $composableBuilder(
+    column: $table.notificationSent,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
 
   $$TasksTableAnnotationComposer get taskId {
     final $$TasksTableAnnotationComposer composer = $composerBuilder(
@@ -2848,11 +3061,17 @@ class $$TaskOccurrencesTableTableManager
                 Value<int> taskId = const Value.absent(),
                 Value<DateTime> occurrenceDate = const Value.absent(),
                 Value<bool> completed = const Value.absent(),
+                Value<DateTime?> completedAt = const Value.absent(),
+                Value<bool> notificationSent = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
               }) => TaskOccurrencesCompanion(
                 id: id,
                 taskId: taskId,
                 occurrenceDate: occurrenceDate,
                 completed: completed,
+                completedAt: completedAt,
+                notificationSent: notificationSent,
+                createdAt: createdAt,
               ),
           createCompanionCallback:
               ({
@@ -2860,11 +3079,17 @@ class $$TaskOccurrencesTableTableManager
                 required int taskId,
                 required DateTime occurrenceDate,
                 Value<bool> completed = const Value.absent(),
+                Value<DateTime?> completedAt = const Value.absent(),
+                Value<bool> notificationSent = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
               }) => TaskOccurrencesCompanion.insert(
                 id: id,
                 taskId: taskId,
                 occurrenceDate: occurrenceDate,
                 completed: completed,
+                completedAt: completedAt,
+                notificationSent: notificationSent,
+                createdAt: createdAt,
               ),
           withReferenceMapper: (p0) => p0
               .map(

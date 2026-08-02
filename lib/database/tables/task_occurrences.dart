@@ -13,4 +13,13 @@ class TaskOccurrences extends Table {
 
   BoolColumn get completed =>
       boolean().withDefault(const Constant(false))();
+
+  DateTimeColumn get completedAt =>
+      dateTime().nullable()();
+
+  BoolColumn get notificationSent =>
+      boolean().withDefault(const Constant(false))();
+
+  DateTimeColumn get createdAt =>
+      dateTime().withDefault(currentDateAndTime)();
 }
