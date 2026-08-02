@@ -13,6 +13,7 @@ class OccurrenceRepository {
         ..where((tbl) => tbl.taskId.equals(taskId)))
       .get();
   }
+  
   Future<bool> occurrenceExists(
   int taskId,
   DateTime occurrenceDate,
